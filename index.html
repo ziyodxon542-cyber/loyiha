@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shisha — umumiy galereya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#f3f1ff; --muted:#b9b4dc;
+  --glass:rgba(255,255,255,.09); --edge:rgba(255,255,255,.28);
+  --a:#7c5cff; --b:#22d3c5; --c:#ff5fa2;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{
+  min-height:100vh;color:var(--ink);font-family:Manrope,system-ui,sans-serif;
+  background:#0d0a24;overflow-x:hidden;
+}
+/* suzuvchi rangli sharlar — shisha ularning ustida shaffof ko'rinadi */
+.orb{position:fixed;border-radius:50%;filter:blur(70px);opacity:.75;z-index:-1;animation:float 18s ease-in-out infinite}
+.o1{width:46vmax;height:46vmax;background:var(--a);top:-12vmax;left:-10vmax}
+.o2{width:38vmax;height:38vmax;background:var(--b);bottom:-14vmax;right:-8vmax;animation-delay:-6s}
+.o3{width:28vmax;height:28vmax;background:var(--c);top:35%;left:45%;animation-delay:-11s}
+@keyframes float{50%{transform:translate(6vmax,-4vmax) scale(1.12)}}
+
+header{max-width:1100px;margin:0 auto;padding:56px 20px 24px;text-align:center}
+h1{font-family:Unbounded,sans-serif;font-weight:700;font-size:clamp(2rem,6vw,3.8rem);line-height:1.05;letter-spacing:-.02em}
+header p{margin:14px auto 0;max-width:46ch;color:var(--muted)}
+
+.glass{
+  background:var(--glass);border:1px solid var(--edge);
+  -webkit-backdrop-filter:blur(22px) saturate(160%);backdrop-filter:blur(22px) saturate(160%);
+  box-shadow:0 18px 50px rgba(5,2,30,.45),inset 0 1px 0 rgba(255,255,255,.35);
+}
+.bar{max-width:1100px;margin:22px auto 0;padding:0 20px}
+.drop{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding:18px 22px;border-radius:22px;transition:.25s;
+}
+.drop.over{border-color:var(--b);transform:scale(1.01)}
+.drop span{color:var(--muted);font-size:.95rem}
+button,.btn{
+  font:600 .95rem Manrope,sans-serif;color:#fff;cursor:pointer;border:0;border-radius:14px;padding:12px 20px;
+  background:linear-gradient(135deg,var(--a),var(--c));box-shadow:0 8px 24px rgba(124,92,255,.45);transition:.2s;
+}
+button:hover,.btn:hover{transform:translateY(-2px)}
+button:focus-visible,.btn:focus-visible{outline:2px solid #fff;outline-offset:3px}
+button:disabled{opacity:.6;cursor:wait}
+input[type=file]{display:none}
+
+#notice{max-width:1100px;margin:16px auto 0;padding:0 20px}
+#notice div{padding:14px 18px;border-radius:16px;font-size:.92rem;border-color:rgba(255,95,162,.6)}
+
+.grid{
+  max-width:1100px;margin:30px auto 80px;padding:0 20px;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:28px;
+  perspective:1200px;
+}
+.card{
+  position:relative;border-radius:24px;padding:12px;transform-style:preserve-3d;
+  transition:transform .15s ease-out,box-shadow .3s;will-change:transform;
+}
+.card:hover{box-shadow:0 30px 70px rgba(5,2,30,.6),inset 0 1px 0 rgba(255,255,255,.4)}
+.card .img{border-radius:16px;overflow:hidden;aspect-ratio:4/5;transform:translateZ(40px);box-shadow:0 14px 30px rgba(0,0,0,.4)}
+.card img{width:100%;height:100%;object-fit:cover;display:block}
+.glare{position:absolute;inset:0;border-radius:24px;pointer-events:none;opacity:0;transition:opacity .3s;
+  background:radial-gradient(circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.35),transparent 55%)}
+.card:hover .glare{opacity:1}
+.meta{display:flex;align-items:center;justify-content:space-between;padding:14px 6px 4px;transform:translateZ(60px)}
+.meta small{color:var(--muted)}
+.like{
+  display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;
+  background:rgba(255,255,255,.12);border:1px solid var(--edge);box-shadow:none;
+}
+.like svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2;transition:.25s}
+.like.on{background:rgba(255,95,162,.3);border-color:var(--c)}
+.like.on svg{fill:var(--c);stroke:var(--c);animation:pop .4s}
+@keyframes pop{40%{transform:scale(1.5)}}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:60px 0}
+
+@media (hover:none){.card{transform:none!important}}
+@media (prefers-reduced-motion:reduce){.orb{animation:none}.card{transition:none}}
+</style>
+</head>
+<body>
+<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+
+<header>
+  <h1>Umumiy shisha galereya</h1>
+  <p>Rasm yuklang — uni hamma ko'radi. Yoqqanini bosing — hamma uchun hisoblanadi.</p>
+</header>
+
+<div class="bar">
+  <div class="drop glass" id="drop">
+    <span id="hint">Rasmni shu yerga tashlang yoki tugmani bosing</span>
+    <label class="btn" tabindex="0" id="pick">Rasm yuklash
+      <input type="file" id="file" accept="image/*" multiple>
+    </label>
+  </div>
+</div>
+<div id="notice"></div>
+
+<main class="grid" id="grid"><div class="empty">Yuklanmoqda…</div></main>
+
+<script>
+const $ = id => document.getElementById(id);
+const grid = $('grid'), notice = $('notice'), drop = $('drop');
+const HINT = 'Rasmni shu yerga tashlang yoki tugmani bosing';
+let liked = {}, photos = [];
+try { liked = JSON.parse(localStorage.getItem('liked') || '{}'); } catch (e) {}
+const saveLiked = () => { try { localStorage.setItem('liked', JSON.stringify(liked)); } catch (e) {} };
+const warn = m => { notice.innerHTML = m ? '<div class="glass">' + m + '</div>' : ''; };
+
+async function api(path, opt){
+  const r = await fetch('/api/' + path, opt);
+  if (!r.ok) throw new Error((await r.text()) || r.status);
+  return r.json();
+}
+
+async function load(){
+  try {
+    const next = await api('photos');
+    warn('');
+    const same = next.length === photos.length && next.every((p, i) => p.id === photos[i].id);
+    photos = next;
+    if (same) photos.forEach(p => { const b = document.querySelector('[data-id="' + p.id + '"] b'); if (b) b.textContent = p.likes; });
+    else render();
+  } catch (e) {
+    warn('Server bilan aloqa yo\'q. Sayt Netlify\'da (Functions bilan) ishlayotganini tekshiring.');
+    if (!photos.length) grid.innerHTML = '<div class="empty">Rasmlar yuklanmadi.</div>';
+  }
+}
+
+function render(){
+  if (!photos.length) { grid.innerHTML = '<div class="empty">Hali rasm yo\'q. Birinchi bo\'lib yuklang.</div>'; return; }
+  grid.innerHTML = '';
+  photos.forEach(p => {
+    const el = document.createElement('article');
+    el.className = 'card glass'; el.dataset.id = p.id;
+    el.innerHTML = `
+      <div class="img"><img alt="Yuklangan rasm" loading="lazy" src="/api/img/${p.id}"></div>
+      <div class="meta">
+        <small>${new Date(p.createdAt).toLocaleDateString('uz-UZ')}</small>
+        <button class="like ${liked[p.id] ? 'on' : ''}" aria-label="Yoqdi">
+          <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.6-9.3-9A5.4 5.4 0 0 1 12 6.2 5.4 5.4 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg>
+          <b>${p.likes}</b>
+        </button>
+      </div>
+      <div class="glare"></div>`;
+    el.querySelector('.like').onclick = ev => toggleLike(p, ev.currentTarget);
+    tilt(el);
+    grid.appendChild(el);
+  });
+}
+
+function tilt(el){
+  el.addEventListener('mousemove', e => {
+    const r = el.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+    el.style.transform = `rotateY(${(x - .5) * 22}deg) rotateX(${(.5 - y) * 22}deg) scale(1.04)`;
+    el.style.setProperty('--gx', x * 100 + '%'); el.style.setProperty('--gy', y * 100 + '%');
+  });
+  el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+}
+
+async function toggleLike(p, btn){
+  const was = !!liked[p.id], delta = was ? -1 : 1;
+  btn.classList.toggle('on', !was);
+  btn.querySelector('b').textContent = Math.max(0, p.likes + delta);
+  try {
+    const r = await api('like', { method: 'POST', body: JSON.stringify({ id: p.id, delta }) });
+    p.likes = r.likes; btn.querySelector('b').textContent = r.likes;
+    if (was) delete liked[p.id]; else liked[p.id] = 1;
+    saveLiked();
+  } catch (e) { btn.classList.toggle('on', was); btn.querySelector('b').textContent = p.likes; warn('Like saqlanmadi.'); }
+}
+
+function shrink(file){
+  return new Promise((res, rej) => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      const k = Math.min(1, 1200 / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      let q = .82, out = c.toDataURL('image/jpeg', q);
+      while (out.length > 1200000 && q > .3) { q -= .1; out = c.toDataURL('image/jpeg', q); }
+      res(out);
+    };
+    img.onerror = () => rej(new Error('Bu fayl rasm emas'));
+    img.src = url;
+  });
+}
+
+async function upload(files){
+  $('hint').textContent = 'Yuklanmoqda…';
+  for (const f of files) {
+    if (!f.type.startsWith('image/')) continue;
+    try {
+      const src = await shrink(f);
+      await api('photos', { method: 'POST', body: JSON.stringify({ src }) });
+    } catch (e) { warn('Yuklanmadi: ' + e.message); }
+  }
+  $('hint').textContent = HINT;
+  load();
+}
+
+$('file').onchange = e => { upload([...e.target.files]); e.target.value = ''; };
+$('pick').onkeydown = e => { if (e.key === 'Enter') $('file').click(); };
+['dragenter','dragover'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave','drop'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e => upload([...e.dataTransfer.files]));
+
+load();
+setInterval(() => { if (!document.hidden) load(); }, 5000);
+</script>
+</body>
+</html>
