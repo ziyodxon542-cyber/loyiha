@@ -140,7 +140,7 @@ function render(){
     const el = document.createElement('article');
     el.className = 'card glass'; el.dataset.id = p.id;
     el.innerHTML = `
-      <div class="img"><img alt="Yuklangan rasm" loading="lazy" src="/api/img/${p.id}"></div>
+      <div class="img"><img alt="Yuklangan rasm" src="/api/img/${p.id}" onerror="setTimeout(()=>{this.src='/api/img/${p.id}?r='+Date.now()},1500)"></div>
       <div class="meta">
         <small>${new Date(p.createdAt).toLocaleDateString('uz-UZ')}</small>
         <button class="like ${liked[p.id] ? 'on' : ''}" aria-label="Yoqdi">
